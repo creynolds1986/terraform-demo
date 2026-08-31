@@ -1,0 +1,2 @@
+$env:TF_CLOUD_ORGANIZATION="your-org-name"
+$env:TF_WORKSPACE="learn-terraform-azure"

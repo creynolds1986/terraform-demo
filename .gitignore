@@ -1,0 +1,15 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+.env
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+terraform.tfvars
+*.auto.tfvars
+set-env.ps1
+.terraform.lock.hcl
