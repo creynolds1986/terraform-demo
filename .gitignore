@@ -9,7 +9,5 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
-terraform.tfvars
-*.auto.tfvars
 set-env.ps1
 .terraform.lock.hcl
