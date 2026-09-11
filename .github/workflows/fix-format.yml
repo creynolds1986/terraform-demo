@@ -1,0 +1,52 @@
+name: "Format Fix on Demand"
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  fix-format:
+    if: github.event.issue.pull_request && github.event.comment.body == '/fix-format'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Get PR branch
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            core.setOutput('ref', pr.data.head.ref);
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.ref }}
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Apply formatting
+        run: terraform fmt -recursive
+
+      - name: Commit and push fix
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Apply terraform fmt via /fix-format command"
+
+      - name: React to comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: '+1',
+            });
